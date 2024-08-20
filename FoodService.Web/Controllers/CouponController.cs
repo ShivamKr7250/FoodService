@@ -48,5 +48,10 @@ namespace FoodService.Web.Controllers
             }
             return View(model);
         }
+
+        public async Task<IActionResult> DeleteCoupon(int couponId)
+        {
+            return View();
+        }
     }
 }
