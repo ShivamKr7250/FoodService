@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{7394
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodService.Services.CouponAPI", "FoodService.Services.CouponAPI\FoodService.Services.CouponAPI.csproj", "{0A19F8EC-79C8-4C2D-B81C-A5AB8E2550F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodService.Web", "FoodService.Web\FoodService.Web.csproj", "{E286F44D-FFA8-4790-A98C-72532C7C1FB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodService.Web", "FoodService.Web\FoodService.Web.csproj", "{E286F44D-FFA8-4790-A98C-72532C7C1FB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
