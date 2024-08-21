@@ -25,6 +25,10 @@ namespace FoodService.Web.Controllers
             {
                 list = JsonConvert.DeserializeObject<List<CouponDto>>(Convert.ToString(response.Result));
             }
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
 
             return View(list);
         }
@@ -43,9 +47,15 @@ namespace FoodService.Web.Controllers
 
                 if (response != null && response.IsSuccess)
                 {
+                    TempData["success"] = "Coupon Created Successfully";
                     return RedirectToAction(nameof(CouponIndex));
                 }
+                else
+                {
+                    TempData["error"] = response?.Message;
+                }
             }
+
             return View(model);
         }
 
@@ -58,7 +68,11 @@ namespace FoodService.Web.Controllers
 				CouponDto? model = JsonConvert.DeserializeObject<CouponDto>(Convert.ToString(response.Result));
                 return View(model);
 			}
-			return NotFound();
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+            return NotFound();
         }
 
         [HttpPost]
@@ -68,7 +82,12 @@ namespace FoodService.Web.Controllers
 
             if (response != null && response.IsSuccess)
             {
+                TempData["error"] = "Coupon Deleted Successfully";
                 return RedirectToAction(nameof(CouponIndex));
+            }
+            else
+            {
+                TempData["error"] = response?.Message;
             }
             return View(couponDto);
         }
