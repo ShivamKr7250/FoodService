@@ -45,7 +45,7 @@ namespace FoodService.Web.Controllers
             }
             else
             {
-                ModelState.AddModelError("CustomeError", responseDto.Message);
+                TempData["error"] = responseDto.Message;
                 return View(obj);
             }
         }
@@ -82,6 +82,10 @@ namespace FoodService.Web.Controllers
                     TempData["success"] = "Registration Successful";
                     return RedirectToAction(nameof(Login));
                 }
+            }
+            else
+            {
+                TempData["error"] = result.Message;
             }
 
             var roleList = new List<SelectListItem>()
