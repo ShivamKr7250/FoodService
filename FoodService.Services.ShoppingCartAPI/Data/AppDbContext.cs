@@ -12,12 +12,7 @@ namespace FoodService.Services.ShoppingCartAPI.Data
 
         public DbSet<CartDetails> CartDetails { get; set; }
 
-        public DbSet<CartHeader> CartHeader { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-        }
+        public DbSet<CartHeader> CartHeaders { get; set; }
 
     }
 }
