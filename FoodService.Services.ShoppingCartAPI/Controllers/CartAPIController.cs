@@ -18,13 +18,15 @@ namespace FoodService.Services.ShoppingCartAPI.Controllers
         private IMapper _mapper;
         private readonly AppDbContext _db;
         private readonly IProductService _productService;
+        private readonly ICouponService _couponService;
 
-        public CartAPIController(AppDbContext db, IMapper mapper, IProductService productService)
+        public CartAPIController(AppDbContext db, IMapper mapper, IProductService productService, ICouponService couponService)
         {
             _db = db;
             _mapper = mapper;
             _productService = productService;
             this._response = new ResponseDto();
+            _couponService = couponService;
         }
 
         [HttpGet("GetCart/{userId}")]
@@ -45,6 +47,17 @@ namespace FoodService.Services.ShoppingCartAPI.Controllers
                 {
                     item.Product = productDtos.FirstOrDefault(u => u.ProductId == item.ProductId);
                     cart.CartHeader.CartTotal = (item.Count * item.Product.Price);
+                }
+
+                //apply coupon if any
+                if (!string.IsNullOrEmpty(cart.CartHeader.CouponCode))
+                {
+                    CouponDto coupon = await _couponService.GetCoupon(cart.CartHeader.CouponCode);
+                    if(coupon != null && cart.CartHeader.CartTotal > coupon.MinAmount)
+                    {
+                        cart.CartHeader.CartTotal -= coupon.MinAmount;
+                        cart.CartHeader.Discount = coupon.DiscountAmount;
+                    }
                 }
 
                 _response.Result = cart;
