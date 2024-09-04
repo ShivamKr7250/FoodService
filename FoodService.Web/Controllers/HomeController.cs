@@ -11,13 +11,11 @@ namespace FoodService.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IProductService _productService;
         private readonly ICartService _cartService;
 
-        public HomeController(ILogger<HomeController> logger, IProductService productService, ICartService cartService)
+        public HomeController(IProductService productService, ICartService cartService)
         {
-            _logger = logger;
             _productService = productService;
             _cartService = cartService;
         }
@@ -59,8 +57,8 @@ namespace FoodService.Web.Controllers
             return View(model);
         }
 
-        [HttpPost]
         [Authorize]
+        [HttpPost]
         [ActionName("ProductDetails")]
         public async Task<IActionResult> ProductDetails(ProductDto productDto)
         {
@@ -78,8 +76,7 @@ namespace FoodService.Web.Controllers
                 ProductId = productDto.ProductId,
             };
 
-            List<CartDetailsDto> cartDetailsDtos = new() 
-                { cartDetails };
+            List<CartDetailsDto> cartDetailsDtos = new() { cartDetails};
             cartDto.CartDetails = cartDetailsDtos;
 
             ResponseDto? response = await _cartService.UpsertCartAsync(cartDto);

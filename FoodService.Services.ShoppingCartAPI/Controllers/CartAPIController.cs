@@ -109,7 +109,7 @@ namespace FoodService.Services.ShoppingCartAPI.Controllers
         }
 
         [HttpPost("CartUpsert")]
-        public async Task<ResponseDto> CartUpsert([FromBody] CartDto cartDto)
+        public async Task<ResponseDto> CartUpsert(CartDto cartDto)
         {
             try
             {

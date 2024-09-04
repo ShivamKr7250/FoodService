@@ -5,9 +5,9 @@ namespace FoodService.Services.ShoppingCartAPI.Utility
 {
     public class BackendApiAuthenticationHttpClientHandler : DelegatingHandler
     {
-        private readonly HttpContextAccessor _accessor;
+        private readonly IHttpContextAccessor _accessor;
 
-        public BackendApiAuthenticationHttpClientHandler (HttpContextAccessor accessor)
+        public BackendApiAuthenticationHttpClientHandler (IHttpContextAccessor accessor)
         {
             _accessor = accessor;
         }
