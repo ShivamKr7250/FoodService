@@ -62,25 +62,36 @@ namespace FoodService.Web.Controllers
         [ActionName("ProductDetails")]
         public async Task<IActionResult> ProductDetails(ProductDto productDto)
         {
+            // Retrieve the User ID from the claims
+            var userId = User.Claims.FirstOrDefault(u => u.Type == JwtClaimTypes.Subject)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["error"] = "User ID not found";
+                return View(productDto);
+            }
+
+            // Create CartDto object with CartHeader and CartDetails
             CartDto cartDto = new CartDto()
             {
                 CartHeader = new CartHeaderDto
                 {
-                    UserId = User.Claims.Where(u => u.Type == JwtClaimTypes.Subject)?.FirstOrDefault()?.Value,
+                    UserId = userId,
                 }
             };
 
+            // Add Product details to CartDetailsDto
             CartDetailsDto cartDetails = new CartDetailsDto()
             {
                 Count = productDto.Count,
                 ProductId = productDto.ProductId,
             };
 
-            List<CartDetailsDto> cartDetailsDtos = new() { cartDetails};
-            cartDto.CartDetails = cartDetailsDtos;
+            cartDto.CartDetails = new List<CartDetailsDto> { cartDetails };
 
+            // Call the Cart Service to upsert the cart
             ResponseDto? response = await _cartService.UpsertCartAsync(cartDto);
 
+            // Handle response from service
             if (response != null && response.IsSuccess)
             {
                 TempData["success"] = "Item has been added to the Shopping Cart";
@@ -88,10 +99,9 @@ namespace FoodService.Web.Controllers
             }
             else
             {
-                TempData["error"] = response?.Message;
+                TempData["error"] = response?.Message ?? "An error occurred while adding the item to the cart.";
+                return View(productDto); // Return the view with the product details if an error occurs.
             }
-
-            return View(productDto);
         }
 
 

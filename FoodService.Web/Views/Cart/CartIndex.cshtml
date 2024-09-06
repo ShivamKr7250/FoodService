@@ -71,7 +71,7 @@
                             {
                                 <span>Coupon:</span>
                                 <input asp-for="CartHeader.CouponCode" disabled />
-                                <button type="submit" asp-action="RemoveCoupon" class="btn btn-sm btn-success"> Remove </button>
+                                <button type="submit" asp-controller="Cart" asp-action="RemoveCoupon" class="btn btn-sm btn-success"> Remove </button>
                             }
 
                         </div>

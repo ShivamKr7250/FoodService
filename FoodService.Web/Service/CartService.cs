@@ -18,7 +18,7 @@ namespace FoodService.Web.Service
             {
                 ApiType = SD.ApiType.POST,
                 Data = cartDto,
-                Url = SD.ShoppingCartAPIBase + "/api/cart/ApplyCoupon"
+                Url = SD.ShoppingCartAPIBase + "/api/cart/ApplyCoupon",
             });
         }
 
@@ -26,7 +26,7 @@ namespace FoodService.Web.Service
         {
             return await _baseService.SendAsync(new RequestDto()
             {
-                ApiType = SD.ApiType.POST,
+                ApiType = SD.ApiType.GET,
                 Url = SD.ShoppingCartAPIBase + "/api/cart/GetCart/" + userId
             });
         }

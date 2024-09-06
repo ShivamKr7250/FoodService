@@ -113,52 +113,69 @@ namespace FoodService.Services.ShoppingCartAPI.Controllers
         {
             try
             {
-                var cartHeaderFromDb = await _db.CartHeaders.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == cartDto.CartHeader.UserId);
-                if(cartHeaderFromDb == null)
+                // Ensure CartDetails is not null or empty before accessing it
+                if (cartDto.CartDetails == null || !cartDto.CartDetails.Any())
                 {
-                    //create header and details
+                    _response.IsSuccess = false;
+                    _response.Message = "CartDetails cannot be empty.";
+                    return _response;
+                }
+
+                // Fetch existing CartHeader by UserId
+                var cartHeaderFromDb = await _db.CartHeaders.AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.UserId == cartDto.CartHeader.UserId);
+
+                if (cartHeaderFromDb == null)
+                {
+                    // Create new CartHeader and CartDetails
                     CartHeader cartHeader = _mapper.Map<CartHeader>(cartDto.CartHeader);
                     _db.CartHeaders.Add(cartHeader);
                     await _db.SaveChangesAsync();
+
                     cartDto.CartDetails.First().CartHeaderId = cartHeader.CartHeaderId;
                     _db.CartDetails.Add(_mapper.Map<CartDetails>(cartDto.CartDetails.First()));
                     await _db.SaveChangesAsync();
                 }
                 else
                 {
-                    //if header is not null
-                    //check if details has same product
+                    // If CartHeader exists, check if CartDetails for the product already exists
                     var cartDetailsFromDb = await _db.CartDetails.AsNoTracking().FirstOrDefaultAsync(
-                        u => u.ProductId == cartDto.CartDetails.First().ProductId && 
+                        u => u.ProductId == cartDto.CartDetails.First().ProductId &&
                         u.CartHeaderId == cartHeaderFromDb.CartHeaderId);
 
-                    if(cartDetailsFromDb == null)
+                    if (cartDetailsFromDb == null)
                     {
-                        //create cart details
+                        // If CartDetails does not exist, create new CartDetails
                         cartDto.CartDetails.First().CartHeaderId = cartHeaderFromDb.CartHeaderId;
                         _db.CartDetails.Add(_mapper.Map<CartDetails>(cartDto.CartDetails.First()));
                         await _db.SaveChangesAsync();
                     }
                     else
                     {
-                        //update count in cart details
+                        // Update existing CartDetails count
                         cartDto.CartDetails.First().Count += cartDetailsFromDb.Count;
-                        cartDto.CartDetails.First().CartHeaderId = cartHeaderFromDb.CartHeaderId;
+                        cartDto.CartDetails.First().CartHeaderId = cartDetailsFromDb.CartHeaderId;
                         cartDto.CartDetails.First().CartDetailsId = cartDetailsFromDb.CartDetailsId;
+
                         _db.CartDetails.Update(_mapper.Map<CartDetails>(cartDto.CartDetails.First()));
                         await _db.SaveChangesAsync();
                     }
                 }
+
+                // Set success response
                 _response.Result = cartDto;
+                _response.IsSuccess = true;
             }
             catch (Exception ex)
             {
-                _response.Message = ex.Message.ToString();
+                // Log error and set failure response
+                _response.Message = $"Error: {ex.Message}";
                 _response.IsSuccess = false;
             }
 
             return _response;
         }
+
 
         [HttpPost("RemoveCart")]
         public async Task<ResponseDto> RemoveCart([FromBody]int cartDetailsId)
