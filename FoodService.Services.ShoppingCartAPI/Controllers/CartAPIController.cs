@@ -191,6 +191,7 @@ namespace FoodService.Services.ShoppingCartAPI.Controllers
                     var cartHeaderToRemove = await _db.CartHeaders.FirstOrDefaultAsync(u => u.CartHeaderId == cartDetails.CartHeaderId);
                     _db.CartHeaders.Remove(cartHeaderToRemove);
                 }
+                await _db.SaveChangesAsync();
                 _response.Result = true;
             }
             catch (Exception ex)

@@ -22,10 +22,10 @@ namespace FoodService.Web.Controllers
             return View(await LoadCartDtoBasedOnLoggedInUser());
         }
 
-        public async Task<IActionResult> Remove(int cartDetailsId)
+        public async Task<IActionResult> Remove(int cartDetailId)
         {
             var userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
-            ResponseDto? response = await _cartService.RemoveFromCartAsync(cartDetailsId);
+            ResponseDto? response = await _cartService.RemoveFromCartAsync(cartDetailId);
             if(response != null && response.IsSuccess)
             {
                 TempData["success"] = "Cart Updated Successfully";
